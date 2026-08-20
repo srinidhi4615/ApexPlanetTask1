@@ -74,8 +74,16 @@ fun InternshipApp() {
             onTask1Click = {
                 currentScreen = "details"
             },
+            onApiClick = {
+                currentScreen = "api"
+            },
             onHomeClick = {
                 currentScreen = "home"
+            }
+        )
+        "api" -> ApiScreen(
+            onBack = {
+                currentScreen = "tasks"
             }
         )
 
@@ -196,6 +204,7 @@ fun HomeScreen(
 @Composable
 fun TasksScreen(
     onTask1Click: () -> Unit,
+    onApiClick: () -> Unit,
     onHomeClick: () -> Unit
 ) {
 
@@ -243,6 +252,15 @@ fun TasksScreen(
                 status = "● In Progress",
                 statusColor = Orange,
                 onClick = { }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TaskCard(
+                taskTitle = "Task 3",
+                description = "Backend Integration and API Development",
+                status = "● API Integration",
+                statusColor = Teal,
+                onClick = onApiClick
             )
 
             Spacer(modifier = Modifier.weight(1f))
