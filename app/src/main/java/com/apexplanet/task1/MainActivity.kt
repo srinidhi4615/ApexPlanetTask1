@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +18,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,11 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.apexplanet.task1.ui.theme.ApexPlanetTask1Theme
 
-private val Teal = Color(0xFF00796B)
-private val DarkTeal = Color(0xFF004D40)
-private val LightTeal = Color(0xFFE0F2F1)
-private val Green = Color(0xFF2E7D32)
-private val Orange = Color(0xFFF57C00)
+val Teal = Color(0xFF008577)
 
 class MainActivity : ComponentActivity() {
 
@@ -49,11 +42,28 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ApexPlanetTask1Theme {
-                InternshipApp()
+
+                var isLoggedIn by remember {
+                    mutableStateOf(false)
+                }
+
+                if (!isLoggedIn) {
+
+                    LoginScreen(
+                        onLoginSuccess = {
+                            isLoggedIn = true
+                        }
+                    )
+
+                } else {
+
+                    InternshipApp()
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun InternshipApp() {
@@ -64,142 +74,162 @@ fun InternshipApp() {
 
     when (currentScreen) {
 
-        "home" -> HomeScreen(
-            onViewTasks = {
-                currentScreen = "tasks"
-            }
-        )
+        "home" -> {
 
-        "tasks" -> TasksScreen(
-            onTask1Click = {
-                currentScreen = "details"
-            },
-            onApiClick = {
-                currentScreen = "api"
-            },
-            onHomeClick = {
-                currentScreen = "home"
-            }
-        )
-        "api" -> ApiScreen(
-            onBack = {
-                currentScreen = "tasks"
-            }
-        )
+            HomeScreen(
+                onViewTasks = {
+                    currentScreen = "tasks"
+                }
+            )
+        }
 
-        "details" -> TaskDetailsScreen(
-            onBack = {
-                currentScreen = "tasks"
-            }
-        )
+        "tasks" -> {
+
+            TasksScreen(
+                onTask1Click = {
+                    currentScreen = "task1"
+                },
+                onApiClick = {
+                    currentScreen = "api"
+                },
+                onHomeClick = {
+                    currentScreen = "home"
+                }
+            )
+        }
+
+        "task1" -> {
+
+            TaskDetailsScreen(
+                onBack = {
+                    currentScreen = "tasks"
+                }
+            )
+        }
+
+        "api" -> {
+
+            ApiScreen(
+                onBack = {
+                    currentScreen = "tasks"
+                }
+            )
+        }
     }
 }
+
+
+/* ---------------- HOME SCREEN ---------------- */
 
 @Composable
 fun HomeScreen(
     onViewTasks: () -> Unit
 ) {
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { padding ->
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 24.dp, vertical = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Text(
+            text = "APEX PLANET",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            color = Teal
+        )
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Text(
+            text = "Hello, Srinidhi",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+
+        Text(
+            text = "Welcome to your internship journey",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE0F2F1)
+            ),
+            shape = RoundedCornerShape(12.dp)
         ) {
 
-            Text(
-                text = "APEX PLANET",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                color = Teal
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "Hello, Srinidhi 👋",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF333333)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Welcome to your internship journey",
-                fontSize = 16.sp,
-                color = Color(0xFF666666),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = LightTeal
-                )
-            ) {
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    Text(
-                        text = "Internship Progress",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = DarkTeal
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "1 / 2",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Teal
-                    )
-
-                    Text(
-                        text = "Tasks Completed",
-                        fontSize = 14.sp,
-                        color = Color(0xFF666666)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(
-                onClick = onViewTasks,
-                modifier = Modifier
-                    .width(180.dp)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Teal
-                )
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Text(
-                    text = "VIEW TASKS",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    text = "Internship Progress",
+                    fontWeight = FontWeight.Bold,
+                    color = Teal
+                )
+
+                Spacer(
+                    modifier = Modifier.height(12.dp)
+                )
+
+                Text(
+                    text = "3 / 5",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Teal
+                )
+
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+
+                Text(
+                    text = "Tasks Completed"
                 )
             }
         }
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+        Button(
+            onClick = onViewTasks,
+            modifier = Modifier
+                .width(180.dp)
+                .height(52.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Teal
+            )
+        ) {
+
+            Text(
+                text = "VIEW TASKS",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
+
+
+/* ---------------- TASKS SCREEN ---------------- */
 
 @Composable
 fun TasksScreen(
@@ -208,276 +238,332 @@ fun TasksScreen(
     onHomeClick: () -> Unit
 ) {
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { padding ->
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(24.dp)
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Text(
+            text = "MY INTERNSHIP TASKS",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Teal
+        )
+
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+
+        Text(
+            text = "ApexPlanet Internship",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+
+        /* TASK 1 */
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE0F2F1)
+            ),
+            shape = RoundedCornerShape(12.dp),
+            onClick = onTask1Click
         ) {
 
-            Text(
-                text = "MY INTERNSHIP TASKS",
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold,
-                color = Teal
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "ApexPlanet Internship",
-                fontSize = 15.sp,
-                color = Color(0xFF555555)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            TaskCard(
-                taskTitle = "Task 1",
-                description = "Android Development Environment Setup",
-                status = "✓ Completed",
-                statusColor = Green,
-                onClick = onTask1Click
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TaskCard(
-                taskTitle = "Task 2",
-                description = "Designing and Implementing UI/UX",
-                status = "● In Progress",
-                statusColor = Orange,
-                onClick = { }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            TaskCard(
-                taskTitle = "Task 3",
-                description = "Backend Integration and API Development",
-                status = "● API Integration",
-                statusColor = Teal,
-                onClick = onApiClick
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = onHomeClick,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Teal
-                )
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Text(
-                    text = "HOME",
-                    color = Color.White,
+                    text = "Task 1",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Teal
+                )
+
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
+
+                Text(
+                    text = "Android Development Environment Setup",
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = "✓ Completed",
+                    color = Color(0xFF218838),
                     fontWeight = FontWeight.Bold
                 )
             }
         }
-    }
-}
 
-@Composable
-fun TaskCard(
-    taskTitle: String,
-    description: String,
-    status: String,
-    statusColor: Color,
-    onClick: () -> Unit
-) {
 
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LightTeal
+        Spacer(
+            modifier = Modifier.height(20.dp)
         )
-    ) {
 
-        Column(
-            modifier = Modifier.padding(20.dp)
+
+        /* TASK 2 */
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE0F2F1)
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "Task 2",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Teal
+                )
+
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
+
+                Text(
+                    text = "Designing and Implementing UI/UX",
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = "✓ Completed",
+                    color = Color(0xFF218838),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+
+        Spacer(
+            modifier = Modifier.height(20.dp)
+        )
+
+
+        /* TASK 3 */
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE0F2F1)
+            ),
+            shape = RoundedCornerShape(12.dp),
+            onClick = onApiClick
+        ) {
+
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "Task 3",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = Teal
+                )
+
+                Spacer(
+                    modifier = Modifier.height(6.dp)
+                )
+
+                Text(
+                    text = "Backend Integration and API Development",
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = "✓ Completed",
+                    color = Color(0xFF218838),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+
+        Button(
+            onClick = onHomeClick,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Teal
+            )
         ) {
 
             Text(
-                text = taskTitle,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.Bold,
-                color = DarkTeal
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = description,
-                fontSize = 14.sp,
-                color = Color(0xFF333333)
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = status,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = statusColor
+                text = "HOME",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
             )
         }
     }
 }
+
+
+/* ---------------- TASK 1 DETAILS ---------------- */
 
 @Composable
 fun TaskDetailsScreen(
     onBack: () -> Unit
 ) {
 
-    var name by remember {
-        mutableStateOf("")
-    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-    var email by remember {
-        mutableStateOf("")
-    }
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { padding ->
+        Text(
+            text = "Task 1 - Android Setup",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Teal,
+            textAlign = TextAlign.Center
+        )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(24.dp)
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Text(
+            text = "Android Development Environment Setup",
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFFE8F5E9)
+            ),
+            shape = RoundedCornerShape(12.dp)
         ) {
 
-            Text(
-                text = "Task 1 — Android Setup",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Teal
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "Android Development Environment Setup",
-                fontSize = 15.sp,
-                color = Color(0xFF555555)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFE8F5E9)
-                )
-            ) {
-
-                Column(
-                    modifier = Modifier.padding(20.dp)
-                ) {
-
-                    Text(
-                        text = "STATUS",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = DarkTeal
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "✓ Completed",
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Green
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Objective",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = DarkTeal
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "Set up the Android development environment and create a basic Android application.",
-                fontSize = 14.sp,
-                color = Color(0xFF333333)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Tools Used",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = DarkTeal
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "Android Studio\nKotlin\nJetpack Compose",
-                fontSize = 14.sp,
-                color = Color(0xFF333333)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = {
-                    Text("Your Name")
-                },
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = {
-                    Text("Email")
-                },
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Button(
-                onClick = onBack,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Teal
-                )
+            Column(
+                modifier = Modifier.padding(20.dp)
             ) {
 
                 Text(
-                    text = "BACK TO TASKS",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    text = "STATUS",
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(
+                    modifier = Modifier.height(12.dp)
+                )
+
+                Text(
+                    text = "Completed",
+                    color = Color(0xFF218838),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
+        }
+
+        Spacer(
+            modifier = Modifier.height(24.dp)
+        )
+
+        Text(
+            text = "Objective",
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+
+        Text(
+            text = "Set up the Android development environment and create a basic Android application.",
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(
+            modifier = Modifier.height(20.dp)
+        )
+
+        Text(
+            text = "Tools Used",
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+
+        Text(
+            text = "Android Studio\nKotlin\nJetpack Compose\nGit & GitHub",
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(
+            modifier = Modifier.height(32.dp)
+        )
+
+        Button(
+            onClick = onBack,
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Teal
+            )
+        ) {
+
+            Text(
+                text = "BACK TO TASKS",
+                color = Color.White,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
